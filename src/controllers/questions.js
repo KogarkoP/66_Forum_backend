@@ -41,3 +41,27 @@ export const INSERT_QUESTION = async (req, res) => {
     });
   }
 };
+
+export const DELETE_QUESTION_BY_ID = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const question = await questionModel.findOneAndDelete({ id: id });
+
+    if (!question) {
+      return res.status(404).json({
+        message: `Question with ID: ${id} does not exist`,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Question was deleted",
+      question: question,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};

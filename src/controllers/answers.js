@@ -1,4 +1,4 @@
-import answerModel from "../models/answer.js";
+import answerModel from "../models/answers.js";
 
 export const UPDATE_ANSWER_BY_ID = async (req, res) => {
   try {
