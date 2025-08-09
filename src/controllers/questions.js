@@ -16,6 +16,29 @@ export const GET_ALL_QUESTIONS = async (req, res) => {
   }
 };
 
+export const GET_QUESTION_BY_ID = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const question = await questionModel.findOne({ id: id });
+
+    if (!question) {
+      return res.status(404).json({
+        message: "Question does not exist",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Here is your question",
+      question: question,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 export const INSERT_QUESTION = async (req, res) => {
   try {
     const userId = req.user.userId;
