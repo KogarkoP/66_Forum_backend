@@ -10,7 +10,7 @@ import loginSchema from "../schemas/login.js";
 
 const router = express.Router();
 
-router.get("/:id", validate(userSchema), GET_USER_BY_ID);
+router.get("/:id", GET_USER_BY_ID);
 router.post("/register", validate(userSchema), INSERT_USER);
 router.post("/login", validate(loginSchema), LOGIN_USER);
 
