@@ -5,7 +5,7 @@ const validate = (schema) => {
     if (error) {
       return res
         .status(400)
-        .json({ message: "you have provided bad data", error: error });
+        .json({ message: "You have provided bad data", error: error });
     }
 
     return next();

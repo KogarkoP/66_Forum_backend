@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import userRouter from "./src/routes/users.js";
 import questionRouter from "./src/routes/questions.js";
+import answerRouter from "./src/routes/answer.js";
 import "dotenv/config";
 
 const app = express();
@@ -20,6 +21,7 @@ mongoose
 
 app.use("/users", userRouter);
 app.use("/questions", questionRouter);
+app.use("/answers", answerRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port: ${process.env.PORT}`);

@@ -15,7 +15,6 @@ export const INSERT_USER = async (req, res) => {
       name: userName,
       email: req.body.email,
       password: passwordHash,
-      money_balance: req.body.money_balance,
     };
 
     const addUser = new userModel(user);
@@ -34,6 +33,28 @@ export const INSERT_USER = async (req, res) => {
         .json({ message: "User with this email already exists" });
     }
 
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const UPDATE_USER_BY_ID = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await userModel.findOneAndUpdate(
+      { id: userId },
+      { $push: { ...req.body } },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "User was updated",
+      user,
+    });
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({
       message: "Internal server error",
     });

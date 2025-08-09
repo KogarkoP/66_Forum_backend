@@ -10,6 +10,8 @@ const userSchema = mongoose.Schema(
       unique: true,
     },
     password: { type: String, required: true },
+    liked_answers_id: { type: [String], default: [] },
+    disliked_answers_id: { type: [String], default: [] },
   },
   { timestamps: true }
 );
