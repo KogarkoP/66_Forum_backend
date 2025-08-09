@@ -61,6 +61,25 @@ export const UPDATE_USER_BY_ID = async (req, res) => {
   }
 };
 
+export const GET_USER_BY_ID = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await userModel
+      .findOne({ id: id })
+      .select("-password -__v -_id -email");
+
+    res.status(200).json({
+      message: "This is the user which you requested",
+      user: user,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 export const LOGIN_USER = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
