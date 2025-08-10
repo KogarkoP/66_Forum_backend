@@ -43,27 +43,27 @@ export const INSERT_USER = async (req, res) => {
   }
 };
 
-export const UPDATE_USER_BY_ID = async (req, res) => {
-  try {
-    const userId = req.user.userId;
+// export const UPDATE_USER_BY_ID = async (req, res) => {
+//   try {
+//     const userId = req.user.userId;
 
-    const user = await userModel.findOneAndUpdate(
-      { id: userId },
-      { $push: { ...req.body } },
-      { new: true }
-    );
+//     const user = await userModel.findOneAndUpdate(
+//       { id: userId },
+//       { $push: { ...req.body } },
+//       { new: true }
+//     );
 
-    return res.status(200).json({
-      message: "User was updated",
-      user,
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-};
+//     return res.status(200).json({
+//       message: "User was updated",
+//       user,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({
+//       message: "Internal server error",
+//     });
+//   }
+// };
 
 export const GET_USER_BY_ID = async (req, res) => {
   try {

@@ -1,4 +1,31 @@
 import answerModel from "../models/answers.js";
+import { v4 as uuidv4 } from "uuid";
+
+export const INSERT_ANSWER = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const answer = {
+      id: uuidv4(),
+      answer_text: req.body.answer_text,
+      question_id: req.body.question_id,
+      user_id: userId,
+    };
+
+    const addAnswer = new answerModel(answer);
+    const addedAnswer = await addAnswer.save();
+
+    return res.status(201).json({
+      message: "This answer was added to archive",
+      answer: addedAnswer,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
 
 export const UPDATE_ANSWER_BY_ID = async (req, res) => {
   try {
