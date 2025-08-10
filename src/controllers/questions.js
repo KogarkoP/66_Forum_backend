@@ -55,7 +55,7 @@ export const INSERT_QUESTION = async (req, res) => {
 
     return res.status(201).json({
       message: "This question was added to archive",
-      ticket: addedQuestion,
+      question: addedQuestion,
     });
   } catch (err) {
     console.log(err);
