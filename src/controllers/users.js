@@ -14,15 +14,19 @@ export const INSERT_USER = async (req, res) => {
       id: uuidv4(),
       name: userName,
       email: req.body.email,
+      terms_privacy: req.body.terms_privacy,
       password: passwordHash,
     };
 
     const addUser = new userModel(user);
     const addedUser = await addUser.save();
+    const savedUser = await userModel
+      .findOne({ id: addedUser.id })
+      .select("-password -__v -_id -email");
 
     res.status(201).json({
       message: "This user was created",
-      user: addedUser,
+      user: savedUser,
     });
   } catch (err) {
     console.log(err);

@@ -5,7 +5,7 @@ import {
   DELETE_QUESTION_BY_ID,
   GET_QUESTION_BY_ID,
 } from "../controllers/questions.js";
-// import auth from "../middlewares/auth.js";
+import auth from "../middlewares/auth.js";
 import validate from "../middlewares/validation.js";
 import questionSchema from "../schemas/question.js";
 
@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", GET_ALL_QUESTIONS);
 router.get("/:id", GET_QUESTION_BY_ID);
-router.post("/", validate(questionSchema), INSERT_QUESTION);
+router.post("/", validate(questionSchema), auth, INSERT_QUESTION);
 router.delete("/:id", DELETE_QUESTION_BY_ID);
 
 export default router;
