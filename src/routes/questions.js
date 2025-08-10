@@ -14,6 +14,6 @@ const router = express.Router();
 router.get("/", GET_ALL_QUESTIONS);
 router.get("/:id", GET_QUESTION_BY_ID);
 router.post("/", validate(questionSchema), auth, INSERT_QUESTION);
-router.delete("/:id", DELETE_QUESTION_BY_ID);
+router.delete("/:id", auth, DELETE_QUESTION_BY_ID);
 
 export default router;

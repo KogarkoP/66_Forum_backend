@@ -6,6 +6,7 @@ export const GET_ALL_QUESTIONS = async (req, res) => {
     const questions = await questionModel.find();
 
     res.status(200).json({
+      message: "Here are your questions",
       questions: questions,
     });
   } catch (err) {
