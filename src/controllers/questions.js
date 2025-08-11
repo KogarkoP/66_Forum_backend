@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import questionModel from "../models/questions.js";
+import answerModel from "../models/answers.js";
 
 export const GET_ALL_QUESTIONS = async (req, res) => {
   try {
@@ -78,9 +79,12 @@ export const DELETE_QUESTION_BY_ID = async (req, res) => {
       });
     }
 
+    const answers = await answerModel.deleteMany({ question_id: id });
+
     return res.status(200).json({
-      message: "Question was deleted",
+      message: "Question and its answers were deleted.",
       question: question,
+      answers: answers,
     });
   } catch (err) {
     console.log(err);
