@@ -1,4 +1,5 @@
 import answerModel from "../models/answers.js";
+import questionModel from "../models/questions.js";
 import { v4 as uuidv4 } from "uuid";
 
 export const GET_ANSWERS_BY_QUESTION = async (req, res) => {
@@ -7,11 +8,11 @@ export const GET_ANSWERS_BY_QUESTION = async (req, res) => {
 
     const answers = await answerModel.find({ question_id: questionId });
 
-    if (answers.length === 0) {
-      return res.status(404).json({
-        message: `There are no answers matching question ID: ${questionId} `,
-      });
-    }
+    // if (answers.length === 0) {
+    //   return res.status(404).json({
+    //     message: `There are no answers matching question ID: ${questionId} `,
+    //   });
+    // }
 
     res.status(200).json({
       message: "Here are your answers",
@@ -28,13 +29,20 @@ export const GET_ANSWERS_BY_QUESTION = async (req, res) => {
 export const INSERT_ANSWER = async (req, res) => {
   try {
     const userId = req.user.userId;
+    const questionId = req.body.question_id;
 
     const answer = {
       id: uuidv4(),
       answer_text: req.body.answer_text,
-      question_id: req.body.question_id,
+      question_id: questionId,
       user_id: userId,
     };
+
+    const question = await questionModel.findOneAndUpdate(
+      { id: questionId },
+      { $inc: { answers_count: 1 } },
+      { new: true }
+    );
 
     const addAnswer = new answerModel(answer);
     const addedAnswer = await addAnswer.save();
@@ -42,6 +50,7 @@ export const INSERT_ANSWER = async (req, res) => {
     return res.status(201).json({
       message: "This answer was added to archive",
       answer: addedAnswer,
+      updated_question: question,
     });
   } catch (err) {
     console.log(err);
@@ -91,9 +100,17 @@ export const DELETE_ANSWER_BY_ID = async (req, res) => {
       });
     }
 
+    const questionId = answer.question_id;
+    const question = await questionModel.findOneAndUpdate(
+      { id: questionId },
+      { $inc: { answers_count: -1 } },
+      { new: true }
+    );
+
     return res.status(200).json({
       message: "Answer was deleted",
       answer: answer,
+      updated_question: question,
     });
   } catch (err) {
     console.log(err);
