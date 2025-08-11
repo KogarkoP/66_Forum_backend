@@ -1,4 +1,5 @@
 import answerModel from "../models/answers.js";
+import userModel from "../models/users.js";
 import questionModel from "../models/questions.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -60,31 +61,73 @@ export const INSERT_ANSWER = async (req, res) => {
   }
 };
 
-export const UPDATE_ANSWER_BY_ID = async (req, res) => {
+export const LIKE_DISLIKE_ANSWER_BY_ID = async (req, res) => {
   try {
-    const id = req.params.id;
+    const answerId = req.params.id;
+    const action = req.body.action;
+    const operation = req.body.operation;
+    const userId = req.user.userId;
 
+    const updateField = action === "like" ? "likes_count" : "dislikes_count";
+    const userUpdateField =
+      updateField === "likes_count"
+        ? "liked_answers_id"
+        : "disliked_answers_id";
+    const oppositeUserField =
+      updateField === "likes_count"
+        ? "disliked_answers_id"
+        : "liked_answers_id";
+
+    const user = await userModel.findOne({ id: userId });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: `User with ID: ${userId} does not exist` });
+    }
+
+    if (operation === "add" && user[oppositeUserField].includes(answerId)) {
+      await userModel.updateOne(
+        { id: userId },
+        { $pull: { [oppositeUserField]: answerId } }
+      );
+      await answerModel.updateOne(
+        { id: answerId },
+        {
+          $inc: {
+            [oppositeUserField === "liked_answers_id"
+              ? "likes_count"
+              : "dislikes_count"]: -1,
+          },
+        }
+      );
+    }
+
+    const userUpdate =
+      operation === "add"
+        ? { $push: { [userUpdateField]: answerId } }
+        : { $pull: { [userUpdateField]: answerId } };
+
+    await userModel.updateOne({ id: userId }, userUpdate);
+    const incrValue = operation === "add" ? 1 : -1;
     const answer = await answerModel.findOneAndUpdate(
-      { id: id },
-      { ...req.body },
+      { id: answerId },
+      { $inc: { [updateField]: incrValue } },
       { new: true }
     );
 
     if (!answer) {
-      return res.status(404).json({
-        message: `Answer with ID: ${id} does not exist`,
-      });
+      return res
+        .status(404)
+        .json({ message: `Answer with ID: ${answerId} does not exist` });
     }
 
     return res.status(200).json({
-      message: "Answer was updated",
-      answer: answer,
+      message: `Answer ${action} ${operation}d successfully`,
+      answer,
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

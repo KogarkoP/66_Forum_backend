@@ -43,28 +43,6 @@ export const INSERT_USER = async (req, res) => {
   }
 };
 
-// export const UPDATE_USER_BY_ID = async (req, res) => {
-//   try {
-//     const userId = req.user.userId;
-
-//     const user = await userModel.findOneAndUpdate(
-//       { id: userId },
-//       { $push: { ...req.body } },
-//       { new: true }
-//     );
-
-//     return res.status(200).json({
-//       message: "User was updated",
-//       user,
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({
-//       message: "Internal server error",
-//     });
-//   }
-// };
-
 export const GET_USER_BY_ID = async (req, res) => {
   try {
     const id = req.params.id;
@@ -87,6 +65,9 @@ export const GET_USER_BY_ID = async (req, res) => {
 export const LOGIN_USER = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
+    const userInfo = await userModel
+      .findOne({ email: req.body.email })
+      .select("-password -__v -_id -email");
 
     if (!user) {
       return res.status(401).json({
@@ -114,6 +95,7 @@ export const LOGIN_USER = async (req, res) => {
     return res.status(200).json({
       message: "User logged in successfully",
       jwt: token,
+      user: userInfo,
     });
   } catch (err) {
     console.log(err);
