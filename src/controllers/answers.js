@@ -9,12 +9,6 @@ export const GET_ANSWERS_BY_QUESTION = async (req, res) => {
 
     const answers = await answerModel.find({ question_id: questionId });
 
-    // if (answers.length === 0) {
-    //   return res.status(404).json({
-    //     message: `There are no answers matching question ID: ${questionId} `,
-    //   });
-    // }
-
     res.status(200).json({
       message: "Here are your answers",
       answers: answers,
